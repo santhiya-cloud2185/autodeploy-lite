@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AutoDeploy Lite</title>
+</head>
+<body>
+  <h1>🚀 AutoDeploy Lite</h1>
+  <button onclick="getMessage()">Get Message</button>
+
+  <p id="output"></p>
+
+  <script>
+    async function getMessage() {
+      const res = await fetch('http://localhost:3000/api');
+      const data = await res.json();
+      document.getElementById('output').innerText = data.message;
+    }
+  </script>
+</body>
+</html>
