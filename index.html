@@ -1,20 +1,1197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>AutoDeploy Lite</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeedbackPro</title>
+<style>
+:root{--primary:#2563EB;--secondary:#1E3A8A;--bg:#F8FAFC;--accent:#38BDF8;--success:#22C55E;--danger:#EF4444;--text:#1F2937;--gray:#6B7280;--light:#E5E7EB}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.4)}50%{box-shadow:0 0 0 14px rgba(37,99,235,0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.hover-lift{transition:transform .2s,box-shadow .2s}.hover-lift:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(37,99,235,.15)}
+.press:active{transform:scale(.96)}
+.glow-pulse{animation:glowPulse 2s infinite}
+.page{display:none;min-height:100vh;animation:fadeIn .4s ease}
+.page.active{display:flex;flex-direction:column}
+#toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.toast{padding:14px 20px;border-radius:12px;color:#fff;font-weight:500;animation:toastIn .3s ease;min-width:240px;box-shadow:0 8px 24px rgba(0,0,0,.15);display:flex;align-items:center;gap:10px}
+.toast.success{background:var(--success)}.toast.error{background:var(--danger)}.toast.info{background:var(--primary)}
+/* LANDING */
+#landing{background:linear-gradient(135deg,#0f172a,#1E3A8A,#2563EB,#38BDF8);background-size:300% 300%;animation:gradientShift 8s ease infinite}
+.landing-nav{display:flex;justify-content:space-between;align-items:center;padding:20px 60px;animation:slideDown .5s ease}
+.logo{font-size:1.8rem;font-weight:800;color:#fff}.logo span{color:var(--accent)}
+.nav-btn{background:#fff;color:var(--primary);padding:10px 28px;border-radius:50px;font-size:.95rem;font-weight:700;border:none;cursor:pointer;transition:all .3s}
+.nav-btn:hover{background:var(--accent);color:#fff;transform:translateY(-2px)}
+.landing-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 20px}
+.hero-badge{background:rgba(56,189,248,.2);border:1px solid rgba(56,189,248,.4);color:var(--accent);padding:8px 20px;border-radius:50px;font-size:.85rem;font-weight:600;margin-bottom:24px;animation:slideDown .6s ease .2s both}
+.hero-title{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:20px;animation:slideUp .6s ease .3s both}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:1.1rem;color:rgba(255,255,255,.75);max-width:550px;line-height:1.7;margin-bottom:40px;animation:slideUp .6s ease .4s both}
+.hero-cta{background:#fff;color:var(--primary);padding:16px 48px;border-radius:50px;font-size:1.1rem;font-weight:700;border:none;cursor:pointer;transition:all .3s;animation:slideUp .6s ease .5s both;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.hero-cta:hover{background:var(--accent);color:#fff;transform:translateY(-3px) scale(1.03)}
+.hero-cards{display:flex;gap:20px;margin-top:60px;flex-wrap:wrap;justify-content:center;animation:slideUp .6s ease .6s both}
+.hero-card{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:24px;text-align:center;color:#fff;width:180px;animation:float 3s ease infinite}
+.hero-card:nth-child(2){animation-delay:.5s}.hero-card:nth-child(3){animation-delay:1s}
+.hero-card-icon{font-size:2rem;margin-bottom:10px}.hero-card h3{font-size:1.5rem;font-weight:800}.hero-card p{font-size:.8rem;opacity:.7}
+/* AUTH */
+#auth{background:linear-gradient(135deg,#0f172a,#1E3A8A);align-items:center;justify-content:center;padding:20px}
+.auth-box{background:#fff;border-radius:24px;padding:50px 40px;width:100%;max-width:440px;box-shadow:0 24px 60px rgba(0,0,0,.3);animation:scaleIn .4s ease}
+.auth-logo{text-align:center;margin-bottom:8px;font-size:2rem;font-weight:900;color:var(--primary)}.auth-logo span{color:var(--accent)}
+.auth-tabs{display:flex;margin:24px 0 28px;border-radius:12px;overflow:hidden;border:2px solid var(--light)}
+.auth-tab{flex:1;padding:12px;background:none;border:none;cursor:pointer;font-weight:600;font-size:.95rem;color:var(--gray);transition:all .3s}
+.auth-tab.active{background:var(--primary);color:#fff}
+.role-select{display:flex;gap:12px;margin-bottom:22px}
+.role-btn{flex:1;padding:14px;border:2px solid var(--light);border-radius:12px;cursor:pointer;text-align:center;transition:all .3s;background:#fff;font-weight:600;color:var(--gray)}
+.role-btn.active{border-color:var(--primary);background:#EFF6FF;color:var(--primary)}
+.role-icon{font-size:1.5rem;display:block;margin-bottom:4px}
+.fg{margin-bottom:16px}.fg label{display:block;font-weight:600;margin-bottom:6px;font-size:.9rem}
+.fg input,.fg select{width:100%;padding:12px 16px;border:2px solid var(--light);border-radius:10px;font-size:.95rem;transition:all .3s;background:var(--bg);color:var(--text);outline:none}
+.fg input:focus,.fg select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1);background:#fff}
+.btn-primary{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s}
+.btn-primary:hover{background:var(--secondary);transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,.3)}
+/* ADMIN */
+#admin{display:none;flex-direction:row;min-height:100vh}
+#admin.active{display:flex}
+.sidebar{width:260px;background:linear-gradient(180deg,#0f172a,#1E3A8A);padding:24px 0;display:flex;flex-direction:column;transition:width .3s;flex-shrink:0;animation:slideInLeft .5s ease}
+.sidebar.collapsed{width:72px}
+.sb-logo{padding:0 20px 24px;font-size:1.4rem;font-weight:800;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);white-space:nowrap;overflow:hidden}
+.sb-logo span{color:var(--accent)}
+.sb-nav{flex:1;padding:16px 0}
+.nav-item{display:flex;align-items:center;gap:14px;padding:14px 20px;color:rgba(255,255,255,.7);cursor:pointer;transition:all .2s;border-left:3px solid transparent;white-space:nowrap}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.08);color:#fff;border-left-color:var(--accent)}
+.nav-icon{font-size:1.2rem;flex-shrink:0}.nav-label{font-weight:500;overflow:hidden;transition:opacity .3s}
+.sidebar.collapsed .nav-label{opacity:0;width:0}
+.sb-toggle{margin:12px 16px;padding:10px;background:rgba(255,255,255,.1);border:none;border-radius:8px;color:#fff;cursor:pointer;text-align:center}
+.admin-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:#fff;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 12px rgba(0,0,0,.06);animation:slideDown .4s ease}
+.topbar-title{font-size:1.3rem;font-weight:700}
+.topbar-user{display:flex;align-items:center;gap:12px;padding:8px 16px;border-radius:50px;background:var(--bg);font-weight:600}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem}
+.content-area{flex:1;padding:28px;overflow-y:auto}
+.admin-section{display:none;animation:fadeIn .4s ease}.admin-section.active{display:block}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;margin-bottom:28px}
+.stat-card{background:#fff;border-radius:16px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);animation:slideUp .5s ease both;transition:all .3s;border-left:4px solid var(--primary)}
+.stat-card:hover{box-shadow:0 8px 24px rgba(37,99,235,.12);transform:translateY(-3px)}
+.stat-card:nth-child(2){border-left-color:var(--accent);animation-delay:.1s}
+.stat-card:nth-child(3){border-left-color:var(--success);animation-delay:.2s}
+.stat-card:nth-child(4){border-left-color:#f59e0b;animation-delay:.3s}
+.stat-label{font-size:.85rem;color:var(--gray);font-weight:500;margin-bottom:8px}
+.stat-value{font-size:2.2rem;font-weight:900}.stat-sub{font-size:.8rem;color:var(--success);margin-top:4px}
+/* BUILDER */
+.card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 2px 16px rgba(0,0,0,.07);animation:slideUp .5s ease}
+.sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.sec-title{font-size:1.4rem;font-weight:700}
+.btn-add{background:var(--primary);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;transition:all .3s}
+.btn-add:hover{background:var(--secondary);transform:translateY(-2px)}
+.fb-input{width:100%;padding:12px 16px;border:2px solid var(--light);border-radius:10px;font-size:.95rem;outline:none;transition:all .3s;background:var(--bg);margin-bottom:14px}
+.fb-input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.fields-wrap{display:flex;flex-direction:column;gap:14px;margin:20px 0}
+.field-row{background:var(--bg);border:2px solid var(--light);border-radius:14px;padding:18px;display:flex;gap:12px;align-items:flex-start;animation:slideInLeft .3s ease;transition:all .2s}
+.field-row:hover{border-color:var(--accent);box-shadow:0 4px 12px rgba(56,189,248,.1)}
+.fnum{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;margin-top:4px}
+.fc{flex:1}
+.field-row input,.field-row select{width:100%;padding:10px 14px;border:1.5px solid var(--light);border-radius:8px;font-size:.9rem;margin-bottom:8px;outline:none;transition:all .2s;background:#fff}
+.field-row input:focus,.field-row select:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(37,99,235,.1)}
+.flr{display:flex;gap:10px}.flr input{flex:1;margin-bottom:0}
+.btn-rm{background:#FEF2F2;border:none;color:var(--danger);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1.1rem;transition:all .2s;flex-shrink:0}
+.btn-rm:hover{background:var(--danger);color:#fff}
+.opts-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.opt-chip{background:#EFF6FF;color:var(--primary);padding:4px 12px;border-radius:20px;font-size:.8rem;display:flex;align-items:center;gap:6px}
+.opt-chip button{background:none;border:none;cursor:pointer;color:var(--danger)}
+.add-opt{display:flex;gap:8px;margin-top:8px}
+.add-opt input{flex:1;padding:8px 12px;border:1.5px dashed var(--light);border-radius:8px;outline:none}
+.add-opt button{padding:8px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+.pub-btn{background:linear-gradient(135deg,var(--success),#16a34a);color:#fff;border:none;padding:16px 40px;border-radius:14px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all .3s;margin-top:20px;box-shadow:0 4px 16px rgba(34,197,94,.3)}
+.pub-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(34,197,94,.4)}
+/* FORMS GRID */
+.forms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}
+.form-card{background:#fff;border-radius:18px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.07);animation:slideUp .5s ease both;transition:all .3s;border:2px solid transparent}
+.form-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 12px 28px rgba(37,99,235,.12)}
+.fc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.fc-title{font-size:1.1rem;font-weight:700}
+.badge{padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600;background:#DCFCE7;color:#15803d}
+.fc-meta{font-size:.85rem;color:var(--gray);margin-bottom:14px}
+.fc-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:.82rem;font-weight:600;transition:all .2s}
+.btn-sm.p{background:var(--primary);color:#fff}.btn-sm.p:hover{background:var(--secondary)}
+.btn-sm.s{background:var(--success);color:#fff}.btn-sm.s:hover{background:#16a34a}
+.btn-sm.d{background:var(--danger);color:#fff}
+.btn-sm.o{background:#fff;color:var(--primary);border:1.5px solid var(--primary)}.btn-sm.o:hover{background:var(--primary);color:#fff}
+/* TABLE */
+.tbl-wrap{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.tbl-head{padding:18px 22px;border-bottom:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;font-weight:700}
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg);padding:13px 16px;text-align:left;font-size:.83rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px}
+td{padding:13px 16px;border-bottom:1px solid var(--bg);font-size:.88rem}
+tr:hover td{background:#F0F9FF}tr:last-child td{border-bottom:none}
+/* ANALYTICS */
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px}
+.cc{background:#fff;border-radius:18px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.07);animation:scaleIn .5s ease both}
+.cc h3{font-size:.95rem;font-weight:700;margin-bottom:18px}
+.cc.full{grid-column:1/-1}
+.algo-box{background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border-radius:14px;padding:16px 18px;margin-bottom:18px;border:1px solid rgba(37,99,235,.15);font-size:.84rem}
+.algo-box h4{font-weight:700;color:var(--primary);margin-bottom:5px}
+.sent-chart{display:flex;align-items:center;gap:22px}
+.donut-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.dc-val{font-size:1.6rem;font-weight:900}.dc-lbl{font-size:.7rem;color:var(--gray)}
+.sent-leg{flex:1}
+.leg-item{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.leg-txt{flex:1;font-size:.85rem;font-weight:500}.leg-pct{font-size:.85rem;font-weight:700}
+.nb-result{display:flex;flex-direction:column;gap:10px}
+.nb-row{display:flex;align-items:center;gap:12px}
+.nb-lbl{width:80px;font-size:.82rem;font-weight:600}
+.nb-bw{flex:1;background:var(--bg);border-radius:50px;height:12px;overflow:hidden}
+.nb-b{height:100%;border-radius:50px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.nb-pct{width:40px;font-size:.82rem;font-weight:700;text-align:right}
+.wcloud{display:flex;flex-wrap:wrap;gap:10px}
+.wchip{padding:6px 14px;border-radius:20px;font-weight:600;transition:all .2s;cursor:default}
+.wchip:hover{transform:scale(1.08)}
+.abars{display:flex;flex-direction:column;gap:10px}
+.arow{display:flex;align-items:center;gap:12px}
+.albl{width:68px;font-size:.82rem;font-weight:600}
+.abw{flex:1;background:var(--bg);border-radius:50px;height:14px;overflow:hidden}
+.ab{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width 1s ease}
+.acnt{width:28px;font-size:.82rem;font-weight:700;text-align:right}
+.grow{display:flex;gap:14px;flex-wrap:wrap}
+.gi{flex:1;min-width:80px;text-align:center;padding:16px;border-radius:14px}
+.gi-icon{font-size:2rem}.gi-val{font-size:1.8rem;font-weight:900}.gi-nm{font-size:.8rem;color:var(--gray)}
+/* USER PAGE */
+#user-page{background:var(--bg);align-items:center;justify-content:flex-start;padding:40px 20px}
+.uf-wrap{width:100%;max-width:620px;margin:0 auto}
+.uf-head{text-align:center;margin-bottom:28px;animation:slideDown .5s ease}
+.uf-head h1{font-size:1.8rem;font-weight:800;margin-bottom:8px}
+.uf-card{background:#fff;border-radius:24px;padding:36px;box-shadow:0 4px 24px rgba(0,0,0,.08);animation:slideUp .5s ease .2s both}
+.req-ttl{font-size:.78rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--bg)}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+.uf{margin-bottom:18px}
+.uf label{display:block;font-weight:600;margin-bottom:6px;font-size:.9rem}
+.uf input,.uf select,.uf textarea{width:100%;padding:12px 16px;border:2px solid var(--light);border-radius:10px;font-size:.95rem;outline:none;transition:all .3s;background:var(--bg)}
+.uf input:focus,.uf select:focus,.uf textarea:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.uf textarea{resize:vertical;min-height:90px}
+.stars{display:flex;gap:8px}
+.star{font-size:1.8rem;cursor:pointer;color:var(--light);transition:all .15s;user-select:none}
+.star.active{color:#f59e0b}.star:hover{transform:scale(1.2)}
+.rg{display:flex;flex-wrap:wrap;gap:10px}
+.ropt{padding:8px 18px;border:2px solid var(--light);border-radius:50px;cursor:pointer;font-size:.9rem;font-weight:500;transition:all .2s}
+.ropt.sel{border-color:var(--primary);background:#EFF6FF;color:var(--primary)}
+.cg{display:flex;flex-direction:column;gap:10px}
+.copt{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 16px;border:2px solid var(--light);border-radius:10px;transition:all .2s}
+.copt.sel{border-color:var(--primary);background:#EFF6FF}
+.cbox{width:20px;height:20px;border:2px solid var(--light);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.copt.sel .cbox{background:var(--primary);border-color:var(--primary);color:#fff}
+.slider{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--light);outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--primary);cursor:pointer}
+.sub-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border:none;border-radius:14px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .3s;margin-top:10px;box-shadow:0 4px 20px rgba(37,99,235,.3)}
+.sub-btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(37,99,235,.4)}
+/* SELECT FORM */
+#select-form{background:var(--bg);padding:40px 20px;align-items:center;justify-content:center}
+.sf-card{width:100%;max-width:650px;background:#fff;border-radius:24px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,.08);animation:scaleIn .4s ease}
+.af-list{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.af{padding:18px 20px;border:2px solid var(--light);border-radius:14px;cursor:pointer;transition:all .25s;display:flex;justify-content:space-between;align-items:center}
+.af:hover{border-color:var(--primary);background:#EFF6FF;transform:translateX(4px)}
+.af h3{font-weight:700;margin-bottom:4px}.af p{font-size:.85rem;color:var(--gray)}
+/* THANK YOU */
+#thankyou{background:linear-gradient(135deg,#0f172a,#1E3A8A,#2563EB);align-items:center;justify-content:center;text-align:center;padding:40px}
+.ty-card{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);border-radius:28px;padding:60px 50px;max-width:500px;animation:scaleIn .5s ease}
+.ty-icon{font-size:4rem;margin-bottom:16px;animation:float 2s ease infinite;display:block}
+.ty-title{font-size:2rem;font-weight:900;color:#fff;margin-bottom:12px}
+.ty-sub{color:rgba(255,255,255,.7);font-size:1rem;line-height:1.6;margin-bottom:32px}
+.ty-btn{background:#fff;color:var(--primary);padding:14px 36px;border-radius:50px;font-size:1rem;font-weight:700;border:none;cursor:pointer;transition:all .3s}
+.ty-btn:hover{background:var(--accent);color:#fff;transform:translateY(-2px)}
+.divider{height:2px;background:var(--bg);margin:20px 0;border-radius:2px}
+.empty-state{text-align:center;padding:50px 20px;color:var(--gray)}
+.empty-icon{font-size:3rem;margin-bottom:14px}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.tg{background:#EFF6FF;color:var(--primary)}.tgr{background:#DCFCE7;color:#15803d}.trd{background:#FEE2E2;color:#991b1b}
+@media(max-width:900px){.ag{grid-template-columns:1fr}}
+@media(max-width:600px){.dg{grid-template-columns:1fr}.landing-nav{padding:16px 20px}}
+</style>
 </head>
 <body>
-  <h1>🚀 AutoDeploy Lite</h1>
-  <button onclick="getMessage()">Get Message</button>
 
-  <p id="output"></p>
+<div id="toast-container"></div>
 
-  <script>
-    async function getMessage() {
-      const res = await fetch('http://localhost:3000/api');
-      const data = await res.json();
-      document.getElementById('output').innerText = data.message;
+<!-- LANDING -->
+<div id="landing" class="page active">
+  <nav class="landing-nav">
+    <div class="logo">Feedback<span>Pro</span></div>
+    <button class="nav-btn press" onclick="showPage('auth')">Get Started →</button>
+  </nav>
+  <div class="landing-hero">
+    <div class="hero-badge">✨ AI-Powered Analytics</div>
+    <h1 class="hero-title">Collect Smarter<br><span>Feedback</span> Today</h1>
+    <p class="hero-sub">Build beautiful feedback forms, collect real responses, and analyze them with Naïve Bayes sentiment classification and TF-IDF keyword extraction.</p>
+    <button class="hero-cta press" onclick="showPage('auth')">🚀 Get Started Free</button>
+    <div class="hero-cards">
+      <div class="hero-card"><div class="hero-card-icon">📝</div><h3>Forms</h3><p>Build instantly</p></div>
+      <div class="hero-card"><div class="hero-card-icon">🧠</div><h3>AI NB</h3><p>Smart analysis</p></div>
+      <div class="hero-card"><div class="hero-card-icon">📊</div><h3>Insights</h3><p>Rich dashboards</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="auth" class="page">
+  <div style="min-height:100vh;background:linear-gradient(135deg,#0f172a,#1E3A8A);display:flex;align-items:center;justify-content:center;padding:20px">
+    <div class="auth-box">
+      <div class="auth-logo">Feedback<span>Pro</span></div>
+      <p style="text-align:center;color:var(--gray);font-size:.88rem;margin-bottom:2px">Smart feedback platform</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login',this)">Login</button>
+        <button class="auth-tab" style="display:none">Register</button>
+      </div>
+      <div id="pane-login">
+        <p style="font-weight:700;margin-bottom:12px">Login as</p>
+       <div class="role-select">
+  <div class="role-btn active" onclick="setRole(this,'admin','L')"><span class="role-icon">👨‍💼</span>Admin</div>
+  <div class="role-btn" onclick="setRole(this,'faculty','L')"><span class="role-icon">🧑‍🏫</span>Faculty</div>
+</div>
+        <div class="fg"><label>Email</label><input type="email" id="li-email" placeholder="you@example.com"></div>
+        <div class="fg"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••"></div>
+        <button class="btn-primary press" onclick="doLogin()">Login →</button>
+        <p style="text-align:center;margin-top:14px;font-size:.82rem;color:var(--gray)">
+          Demo → <strong>admin@demo.com</strong> / admin123 &nbsp;|&nbsp; <strong>user@demo.com</strong> / user123
+        </p>
+        <p style="text-align:center;margin-top:10px"><span style="cursor:pointer;color:var(--primary);font-size:.85rem" onclick="showPage('landing')">← Back to Home</span></p>
+      </div>
+     <div id="pane-register" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="page">
+  <div class="sidebar" id="sidebar">
+    <div class="sb-logo">Feedback<span>Pro</span></div>
+    <nav class="sb-nav">
+      <div class="nav-item active" onclick="showSec('dashboard',this)"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></div>
+      <div class="nav-item" onclick="showSec('create',this)"><span class="nav-icon">➕</span><span class="nav-label">Create Form</span></div>
+      <div class="nav-item" onclick="showSec('forms',this)"><span class="nav-icon">📋</span><span class="nav-label">My Forms</span></div>
+      <div class="nav-item" onclick="showSec('faculty',this)">
+  <span class="ni-ic">👩‍🏫</span>
+  <span class="ni-tx">Create Faculty</span>
+</div>
+    </nav>
+    <button class="sb-toggle" onclick="toggleSB()">◀</button>
+  </div>
+  <div class="admin-main">
+    <div class="topbar">
+      <div class="topbar-title" id="tb-title">Dashboard</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="topbar-user"><div class="avatar" id="a-avatar">A</div><span id="a-name">Admin</span></div>
+        <button class="btn-sm d press" onclick="logout()">Logout</button>
+      </div>
+    </div>
+    <div class="content-area">
+
+      <!-- DASHBOARD -->
+      <div id="sec-dashboard" class="admin-section active">
+        <div class="stats-grid">
+          <div class="stat-card hover-lift"><div class="stat-label">📋 Total Forms</div><div class="stat-value" id="st-forms">0</div></div>
+          <div class="stat-card hover-lift"><div class="stat-label">✅ Published</div><div class="stat-value" id="st-pub">0</div></div>
+          <div class="stat-card hover-lift"><div class="stat-label">📨 Responses</div><div class="stat-value" id="st-resp">0</div></div>
+          <div class="stat-card hover-lift"><div class="stat-label">😊 Positive %</div><div class="stat-value" id="st-pos">0%</div></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:14px">📬 Recent Submissions</h3>
+          <div id="db-recent"><div class="empty-state"><div class="empty-icon">📭</div><p>No activity yet. Create your first form!</p></div></div>
+        </div>
+      </div>
+
+      <!-- CREATE -->
+      <div id="sec-create" class="admin-section">
+        <div class="card">
+          <div class="sec-header"><div class="sec-title">✏️ Form Builder</div></div>
+          <input class="fb-input" type="text" id="f-title" placeholder="Form title *">
+          <input class="fb-input" type="text" id="f-desc" placeholder="Description (optional)">
+          <div style="background:#EFF6FF;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:.84rem;color:var(--secondary)">
+            <strong>📌 Default fields always included:</strong> Name, Age, Gender — plus your custom questions below
+          </div>
+          <div class="sec-header" style="margin-top:4px">
+            <div style="font-weight:700;color:var(--text)">Custom Questions</div>
+            <button class="btn-add press" onclick="addField()">+ Add Question</button>
+          </div>
+          <div class="fields-wrap" id="fw">
+            <div class="empty-state" style="padding:28px"><div class="empty-icon">💡</div><p>Click "+ Add Question" to start building</p></div>
+          </div>
+          <button class="pub-btn press glow-pulse" onclick="publishForm()">🚀 Publish Form</button>
+        </div>
+      </div>
+
+      <!-- FORMS -->
+      <div id="sec-forms" class="admin-section">
+        <div class="sec-header">
+          <div class="sec-title">📋 My Forms</div>
+          <button class="btn-add press" onclick="showSec('create',document.querySelectorAll('.nav-item')[1])">+ New Form</button>
+        </div>
+        <div class="forms-grid" id="fg">
+          <div class="empty-state" style="grid-column:1/-1;padding:60px"><div class="empty-icon">📝</div><p>No forms yet.</p></div>
+        </div>
+      </div>
+
+      <!-- SUBMISSIONS -->
+      <div id="sec-subs" class="admin-section">
+        <div class="sec-header">
+          <div class="sec-title" id="subs-title">Submissions</div>
+          <button class="btn-sm o" onclick="showSec('forms',null);renderForms()">← Back</button>
+        </div>
+        <div class="tbl-wrap">
+          <div class="tbl-head"><span id="subs-count">0 responses</span></div>
+          <div style="overflow-x:auto"><table><thead id="subs-thead"></thead><tbody id="subs-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div id="sec-analytics" class="admin-section">
+        <div class="sec-header">
+          <div class="sec-title" id="an-title">📊 Analytics</div>
+          <button class="btn-sm o" onclick="showSec('forms',null);renderForms()">← Back</button>
+        </div>
+        <div id="an-content"></div>
+      </div>
+
+      <section id="sec-faculty" class="admin-section">
+  <div class="card hover-lift">
+    <div class="card-header">
+      <h3>👩‍🏫 Create Faculty Account</h3>
+      <p style="color:var(--gray);margin-top:6px">
+        Admin can create separate faculty login accounts here.
+      </p>
+    </div>
+
+    <div class="dg">
+      <div class="uf">
+        <label>Faculty Name *</label>
+        <input type="text" id="fac-name" placeholder="Enter faculty name">
+      </div>
+
+      <div class="uf">
+        <label>Email *</label>
+        <input type="email" id="fac-email" placeholder="faculty@college.com">
+      </div>
+
+      <div class="uf">
+        <label>Password *</label>
+        <input type="text" id="fac-password" placeholder="Enter password">
+      </div>
+    </div>
+
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn-primary" onclick="createFacultyFrontend()">➕ Create Faculty</button>
+      <button class="btn-secondary" onclick="clearFacultyForm()">🧹 Clear</button>
+    </div>
+
+    <div id="faculty-result" style="margin-top:20px"></div>
+  </div>
+</section>
+
+    </div>
+  </div>
+</div>
+
+<!-- SELECT FORM -->
+<div id="select-form" class="page">
+  <div class="sf-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="font-size:1.4rem;font-weight:800">📋 Available Forms</h2>
+      <button class="btn-sm d" onclick="logout()">Logout</button>
+    </div>
+    <p style="color:var(--gray)" id="u-greeting">Hello! Select a form to fill out.</p>
+    <div class="af-list" id="af-list"><div class="empty-state"><div class="empty-icon">📭</div><p>No published forms yet.</p></div></div>
+  </div>
+</div>
+
+<!-- USER FORM -->
+<div id="user-page" class="page">
+  <div class="uf-wrap">
+    <div class="uf-head">
+      <h1 id="uf-title">Feedback Form</h1>
+      <p id="uf-desc" style="color:var(--gray)">Please fill out the form below</p>
+    </div>
+    <div class="uf-card">
+      <div class="req-ttl">Student Information (Required)</div>
+<div class="dg">
+  <div class="uf"><label>Student Name *</label><input type="text" id="uf-name" placeholder="Your full name"></div>
+  <div class="uf"><label>Register Number *</label><input type="text" id="uf-reg" placeholder="23IP101"></div>
+  <div class="uf"><label>Section *</label><input type="text" id="uf-section" placeholder="A"></div>
+</div>
+      <div class="divider"></div>
+      <div id="uf-custom"></div>
+      <button class="sub-btn press" onclick="submitFeedback()">✅ Submit Feedback</button>
+    </div>
+  </div>
+</div>
+
+<!-- THANK YOU -->
+<div id="thankyou" class="page">
+  <div class="ty-card">
+    <span class="ty-icon">🎉</span>
+    <div style="font-size:2rem;margin-bottom:14px">✨ 🌟 💫</div>
+    <h1 class="ty-title">Thank You!</h1>
+    <p class="ty-sub">Your feedback has been submitted successfully. We truly appreciate your time and thoughts!</p>
+    <button class="ty-btn press" onclick="backToForms()">← Submit Another Response</button>
+  </div>
+</div>
+
+<script>
+//const API_BASE = "http://localhost:5000";
+const API_BASE = "http://13.60.174.174:5001";
+
+//link
+
+let cu = null;
+let forms = [];
+let currentForm = null;
+let currentToken = null;
+let currentQuestions = [];
+let lRole = "admin";
+let fields = [];
+let fCnt = 0;
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+  const el = document.getElementById(id);
+  if (el) el.classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+function toast(msg, t = "info") {
+  const el = document.createElement("div");
+  el.className = `toast ${t}`;
+  el.innerHTML = `<span>${t === "success" ? "✅" : t === "error" ? "❌" : "ℹ️"}</span>${msg}`;
+  document.getElementById("toast-container").appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll(".auth-tab").forEach((t) => t.classList.remove("active"));
+  if (el) el.classList.add("active");
+  document.getElementById("pane-login").style.display = tab === "login" ? "block" : "none";
+  document.getElementById("pane-register").style.display = "none";
+}
+
+function setRole(el, r, side) {
+  const scope = side === "L" ? "#pane-login" : "#pane-register";
+  document.querySelectorAll(scope + " .role-btn").forEach((b) => b.classList.remove("active"));
+  el.classList.add("active");
+  if (side === "L") lRole = r;
+}
+
+function authHeaders() {
+  if (!cu) return { "Content-Type": "application/json" };
+  return {
+    "Content-Type": "application/json",
+    "x-user-id": cu.userId,
+    "x-user-role": cu.role
+  };
+}
+
+async function apiFetch(path, options = {}) {
+  const res = await fetch(`${API_BASE}${path}`, options);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Request failed");
+  }
+  return data;
+}
+
+async function doLogin() {
+  const email = document.getElementById("li-email").value.trim().toLowerCase();
+  const pass = document.getElementById("li-pass").value;
+
+  if (!email || !pass) {
+    toast("Enter credentials", "error");
+    return;
+  }
+
+  try {
+    const data = await apiFetch("/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password: pass })
+    });
+
+    if (data.user.role !== lRole) {
+      toast(`This account is a ${data.user.role}`, "error");
+      return;
     }
-  </script>
+
+    cu = data.user;
+    localStorage.setItem("vtmt_user", JSON.stringify(cu));
+
+    document.getElementById("a-name").textContent = cu.name;
+    document.getElementById("a-avatar").textContent = cu.name[0].toUpperCase();
+
+    toast(`Welcome, ${cu.name}!`, "success");
+    showPage("admin");
+    await updateStats();
+    await renderForms();
+  } catch (err) {
+    toast(err.message || "Login failed", "error");
+  }
+}
+
+function logout() {
+  cu = null;
+  currentForm = null;
+  currentToken = null;
+  currentQuestions = [];
+  localStorage.removeItem("vtmt_user");
+  showPage("landing");
+  toast("Logged out", "info");
+}
+
+function toggleSB() {
+  const s = document.getElementById("sidebar");
+  s.classList.toggle("collapsed");
+  s.querySelector(".sb-toggle").textContent = s.classList.contains("collapsed") ? "▶" : "◀";
+}
+
+function showSec(name, navEl) {
+  document.querySelectorAll(".admin-section").forEach((s) => s.classList.remove("active"));
+  document.getElementById("sec-" + name).classList.add("active");
+
+  if (navEl) {
+    document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
+    navEl.classList.add("active");
+  }
+
+  const titles = {
+  dashboard: "Dashboard",
+  create: "Create Form",
+  faculty: "Create Faculty",
+  forms: "My Forms",
+  subs: "Submissions",
+  analytics: "Analytics"
+};
+  document.getElementById("tb-title").textContent = titles[name] || name;
+
+  if (name === "dashboard") updateStats();
+  if (name === "forms") renderForms();
+  if (name === "create") resetBuilder();
+}
+
+function resetBuilder() {
+  document.getElementById("f-title").value = "";
+  document.getElementById("f-desc").value = "";
+  fields = [];
+  fCnt = 0;
+  renderFields();
+}
+
+function addField() {
+  fCnt++;
+  fields.push({ id: fCnt, q: "", type: "text", required: false, options: [] });
+  renderFields();
+}
+
+function uf(id, k, v) {
+  const f = fields.find((x) => x.id === id);
+  if (!f) return;
+  f[k] = v;
+  if (k === "type") renderFields();
+}
+
+function addOpt(fid) {
+  const inp = document.getElementById("oi-" + fid);
+  if (!inp || !inp.value.trim()) return;
+  const f = fields.find((x) => x.id === fid);
+  if (!f) return;
+  f.options.push(inp.value.trim());
+  renderFields();
+}
+
+function rmOpt(fid, oi) {
+  const f = fields.find((x) => x.id === fid);
+  if (!f) return;
+  f.options.splice(oi, 1);
+  renderFields();
+}
+
+function rmField(id) {
+  fields = fields.filter((x) => x.id !== id);
+  renderFields();
+}
+
+function renderFields() {
+  const c = document.getElementById("fw");
+
+  if (!fields.length) {
+    c.innerHTML = '<div class="empty-state" style="padding:28px"><div class="empty-icon">💡</div><p>Click "+ Add Question" to start</p></div>';
+    return;
+  }
+
+  c.innerHTML = fields.map((f, i) => `
+    <div class="field-row">
+      <div class="fnum">${i + 1}</div>
+      <div class="fc">
+        <div class="flr">
+          <input value="${f.q || ""}" placeholder="Question label *" onchange="uf(${f.id},'q',this.value)">
+          <select onchange="uf(${f.id},'type',this.value)">
+            <option value="text" ${f.type === "text" ? "selected" : ""}>Short Text</option>
+            <option value="textarea" ${f.type === "textarea" ? "selected" : ""}>Long Text</option>
+            <option value="rating" ${f.type === "rating" ? "selected" : ""}>Star Rating</option>
+            <option value="radio" ${f.type === "radio" ? "selected" : ""}>Multiple Choice</option>
+            <option value="checkbox" ${f.type === "checkbox" ? "selected" : ""}>Checkboxes</option>
+            <option value="scale" ${f.type === "scale" ? "selected" : ""}>Scale 1–10</option>
+            <option value="number" ${f.type === "number" ? "selected" : ""}>Number</option>
+          </select>
+        </div>
+        ${["radio", "checkbox"].includes(f.type) ? `
+          <div class="opts-row">${f.options.map((o, oi) => `<div class="opt-chip">${o}<button type="button" onclick="rmOpt(${f.id},${oi})">×</button></div>`).join("")}</div>
+          <div class="add-opt"><input id="oi-${f.id}" placeholder="Add option, press Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();addOpt(${f.id})}"><button type="button" onclick="addOpt(${f.id})">+ Add</button></div>
+        ` : ""}
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.84rem;cursor:pointer">
+          <input type="checkbox" ${f.required ? "checked" : ""} onchange="uf(${f.id},'required',this.checked)"> Required
+        </label>
+      </div>
+      <button class="btn-rm" type="button" onclick="rmField(${f.id})">✕</button>
+    </div>
+  `).join("");
+}
+
+async function publishForm() {
+  const title = document.getElementById("f-title").value.trim();
+  const description = document.getElementById("f-desc").value.trim();
+
+  if (!title) {
+    toast("Form title required", "error");
+    return;
+  }
+
+  if (fields.some((f) => !String(f.q || "").trim())) {
+    toast("Fill all question labels", "error");
+    return;
+  }
+
+  try {
+    const payload = {
+      title,
+      description,
+      subject: title,
+      section: "A",
+      facultyName: cu?.name || "Faculty",
+      questions: fields.map((f) => ({
+        id: f.id,
+        q: f.q,
+        type: f.type,
+        required: !!f.required,
+        options: f.options || []
+      }))
+    };
+
+    const data = await apiFetch("/forms", {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(payload)
+    });
+
+    toast("🚀 Form published!", "success");
+    resetBuilder();
+    await renderForms();
+    showSec("forms", document.querySelectorAll(".nav-item")[2]);
+
+    // ✅ SIMPLE & 100% WORKING
+    const formLink = `http://vtmt-feedbackpro.s3-website.eu-north-1.amazonaws.com/form/${data.publicToken}`;
+
+    prompt("Copy your form link:", formLink);
+
+  } catch (err) {
+    toast(err.message || "Failed to create form", "error");
+  }
+}
+
+async function renderForms() {
+  const el = document.getElementById("fg");
+
+  try {
+    forms = await apiFetch("/forms/mine", {
+      headers: authHeaders()
+    });
+
+    if (!forms.length) {
+      el.innerHTML = '<div class="empty-state" style="grid-column:1/-1;padding:60px"><div class="empty-icon">📝</div><p>No forms yet.</p></div>';
+      return;
+    }
+
+    el.innerHTML = forms.map((form, i) => `
+      <div class="form-card hover-lift" style="animation-delay:${i * 0.08}s">
+        <div class="fc-head">
+          <div class="fc-title">${form.title}</div>
+          <span class="badge">✅ Live</span>
+        </div>
+        <div class="fc-meta">📅 ${new Date(form.createdAt).toLocaleDateString()} · ${form.section || "-"} section</div>
+        <div style="font-size:.82rem;color:var(--gray);margin-bottom:14px">${form.subject || "No subject"}</div>
+        <div class="fc-actions">
+  <a class="btn-sm o" href="http://vtmt-feedbackpro.s3-website.eu-north-1.amazonaws.com/form/${form.publicToken}" target="_blank">🔗 Open Link</a>
+  <button class="btn-sm p" onclick="viewSubs('${form.formId}','${form.title}')">📨 Submissions</button>
+  <button class="btn-sm s" onclick="viewAnalytics('${form.formId}','${form.title}')">📊 Analytics</button>
+</div>
+
+<div style="margin-top:10px;font-size:.82rem;word-break:break-all;color:var(--primary);">
+  http://vtmt-feedbackpro.s3-website.eu-north-1.amazonaws.com/form/${form.publicToken}
+</div>
+      </div>
+    `).join("");
+  } catch (err) {
+    el.innerHTML = '<div class="empty-state" style="grid-column:1/-1;padding:60px"><div class="empty-icon">❌</div><p>Could not load forms.</p></div>';
+  }
+}
+
+function copyPublicLink(token) {
+  const url = `${window.location.origin}${window.location.pathname}?token=${token}`;
+  navigator.clipboard?.writeText(url)
+    .then(() => toast("Link copied ✅", "success"))
+    .catch(() => toast(url, "info"));
+}
+
+async function updateStats() {
+  if (!cu) return;
+
+  try {
+    forms = await apiFetch("/forms/mine", { headers: authHeaders() });
+
+    document.getElementById("st-forms").textContent = forms.length;
+    document.getElementById("st-pub").textContent = forms.length;
+
+    let totalResponses = 0;
+    let totalPositive = 0;
+    const recentItems = [];
+
+    for (const form of forms) {
+      const analytics = await apiFetch(`/forms/${form.formId}/analytics`, {
+        headers: authHeaders()
+      });
+
+      totalResponses += analytics.results.length;
+      totalPositive += analytics.results.filter((r) => r.sentiment === "Positive").length;
+
+      analytics.results.slice(-3).forEach((r) => {
+        recentItems.push({
+          title: form.title,
+          sentiment: r.sentiment,
+          createdAt: r.createdAt
+        });
+      });
+    }
+
+    document.getElementById("st-resp").textContent = totalResponses;
+    document.getElementById("st-pos").textContent = totalResponses
+      ? `${Math.round((totalPositive / totalResponses) * 100)}%`
+      : "0%";
+
+    const el = document.getElementById("db-recent");
+
+    if (!recentItems.length) {
+      el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No activity yet. Create your first form!</p></div>';
+      return;
+    }
+
+    el.innerHTML = recentItems
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5)
+      .map((s) => {
+        const sc = s.sentiment === "Positive" ? "tgr" : s.sentiment === "Negative" ? "trd" : "tg";
+        return `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:10px;margin-bottom:8px">
+            <div><strong>Anonymous Student</strong> <span class="tag tg">${s.title}</span></div>
+            <span class="tag ${sc}">${s.sentiment || "—"}</span>
+          </div>
+        `;
+      }).join("");
+  } catch (err) {
+    document.getElementById("db-recent").innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><p>Could not load recent submissions.</p></div>';
+  }
+}
+
+async function viewSubs(formId, title) {
+  document.getElementById("subs-title").textContent = `📨 ${title}`;
+  document.getElementById("subs-count").textContent = "Loading...";
+  document.getElementById("subs-thead").innerHTML = "";
+  document.getElementById("subs-tbody").innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--gray)">⏳ Fetching submissions...</td></tr>`;
+  showSec("subs", null);
+
+  try {
+    const rs = await apiFetch(`/admin/forms/${formId}/submissions`, {
+      headers: authHeaders()
+    });
+
+    document.getElementById("subs-count").textContent = `${rs.length} response${rs.length !== 1 ? "s" : ""}`;
+
+    const cols = ["Student Name", "Register No", "Section", "Answers", "Comment", "Date"];
+    document.getElementById("subs-thead").innerHTML = `<tr>${cols.map((c) => `<th>${c}</th>`).join("")}</tr>`;
+
+    if (!rs.length) {
+      document.getElementById("subs-tbody").innerHTML = `<tr><td colspan="${cols.length}" style="text-align:center;padding:40px;color:var(--gray)">No submissions yet.</td></tr>`;
+      return;
+    }
+
+    document.getElementById("subs-tbody").innerHTML = rs.map((s) => {
+      const answers = Object.values(s.answers || {}).map((v) => Array.isArray(v) ? v.join(", ") : v).join(" | ");
+      return `
+        <tr>
+          <td>${s.studentName || "—"}</td>
+          <td>${s.registerNo || "—"}</td>
+          <td>${s.section || "—"}</td>
+          <td>${answers || "—"}</td>
+          <td>${s.comment || "—"}</td>
+          <td>${s.createdAt ? new Date(s.createdAt).toLocaleDateString() : "—"}</td>
+        </tr>
+      `;
+    }).join("");
+  } catch (err) {
+    document.getElementById("subs-count").textContent = "Error";
+    document.getElementById("subs-tbody").innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--danger)">${err.message}</td></tr>`;
+  }
+}
+
+async function viewAnalytics(formId, title) {
+  document.getElementById("an-title").textContent = `📊 ${title}`;
+  const el = document.getElementById("an-content");
+  el.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Analyzing...</p></div>';
+  showSec("analytics", null);
+
+  try {
+    const data = await apiFetch(`/forms/${formId}/analytics`, {
+      headers: authHeaders()
+    });
+
+    const rs = data.results || [];
+    const tfidf_top = data.tfidf_top || [];
+    const confidence = data.confidence || 0;
+
+    if (!rs.length) {
+      el.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p>No submissions yet.</p></div>';
+      return;
+    }
+
+    const pos = rs.filter((s) => s.sentiment === "Positive").length;
+    const neg = rs.filter((s) => s.sentiment === "Negative").length;
+    const neu = rs.filter((s) => s.sentiment === "Neutral").length;
+    const total = rs.length;
+
+    el.innerHTML = `
+      <div class="algo-box">
+        <h4>🧠 Algorithm Pipeline: Text Preprocessing → TF-IDF Feature Extraction → Naïve Bayes Classification</h4>
+        Anonymous analytics view. Avg confidence: <strong>${confidence}%</strong>
+      </div>
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card hover-lift"><div class="stat-label">📨 Total</div><div class="stat-value">${total}</div></div>
+        <div class="stat-card hover-lift"><div class="stat-label" style="color:var(--success)">😊 Positive</div><div class="stat-value" style="color:var(--success)">${Math.round(pos / total * 100)}%</div><div class="stat-sub">${pos} responses</div></div>
+        <div class="stat-card hover-lift"><div class="stat-label" style="color:var(--danger)">😞 Negative</div><div class="stat-value" style="color:var(--danger)">${Math.round(neg / total * 100)}%</div><div class="stat-sub">${neg} responses</div></div>
+        <div class="stat-card hover-lift"><div class="stat-label">😐 Neutral</div><div class="stat-value">${Math.round(neu / total * 100)}%</div><div class="stat-sub">${neu} responses</div></div>
+      </div>
+      <div class="ag">
+        <div class="cc">
+          <h3>🎯 Sentiment Distribution</h3>
+          <div class="sent-chart">
+            ${mkDonut(pos, neu, neg, total)}
+            <div class="sent-leg">
+              ${[
+                ["Positive", pos, "#22C55E"],
+                ["Neutral", neu, "#38BDF8"],
+                ["Negative", neg, "#EF4444"]
+              ].map(([l, c, col]) => `
+                <div class="leg-item">
+                  <div class="leg-dot" style="background:${col}"></div>
+                  <div class="leg-txt">${l}</div>
+                  <div class="leg-pct" style="color:${col}">${total ? Math.round(c / total * 100) : 0}%</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+        <div class="cc">
+          <h3>📝 TF-IDF Top Keywords</h3>
+          <div class="wcloud">
+            ${tfidf_top.map((w, i) => {
+              const cols = ["#EFF6FF", "#DCFCE7", "#FEF3C7", "#FEE2E2", "#F0F9FF"];
+              const tcols = ["var(--primary)", "#15803d", "#92400e", "#991b1b", "#0369a1"];
+              const sz = 1 + (tfidf_top.length - i) / Math.max(tfidf_top.length, 1) * 0.5;
+              return `<div class="wchip hover-lift" style="background:${cols[i % 5]};color:${tcols[i % 5]};font-size:${sz}rem">${w.word} <span style="opacity:.6;font-size:.72em">${Number(w.score).toFixed(2)}</span></div>`;
+            }).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  } catch (err) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div><p>${err.message}</p></div>`;
+  }
+}
+
+function mkDonut(pos, neu, neg, total) {
+  if (!total) {
+    return '<div style="width:140px;height:140px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gray)">No data</div>';
+  }
+  const r = 54, cx = 70, cy = 70, circ = 2 * Math.PI * r;
+  const data = [{ v: pos, c: "#22C55E" }, { v: neu, c: "#38BDF8" }, { v: neg, c: "#EF4444" }];
+  let off = 0;
+  const segs = data.map((d) => {
+    const dash = d.v / total * circ;
+    const s = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.c}" stroke-width="16" stroke-dasharray="${dash} ${circ - dash}" stroke-dashoffset="${-off}" style="transition:stroke-dasharray 1s ease"/>`;
+    off += dash;
+    return s;
+  });
+  return `<div class="donut-wrap"><svg width="140" height="140" viewBox="0 0 140 140">${segs.join("")}</svg><div class="donut-center"><div class="dc-val">${total}</div><div class="dc-lbl">total</div></div></div>`;
+}
+
+function mkUserField(field) {
+  const req = field.required ? '<span style="color:var(--danger)">*</span>' : "";
+  let inp = "";
+
+  if (field.type === "text" || field.type === "number") {
+    inp = `<input type="${field.type}" id="ff-${field.id}" placeholder="Your answer...">`;
+  } else if (field.type === "textarea") {
+    inp = `<textarea id="ff-${field.id}" placeholder="Your answer..."></textarea>`;
+  } else if (field.type === "rating") {
+    inp = `<div class="stars" id="ff-${field.id}" data-val="0">${[1,2,3,4,5].map((n) => `<span class="star" onclick="setRating(${field.id},${n})" data-n="${n}">★</span>`).join("")}</div>`;
+  } else if (field.type === "radio") {
+    inp = `<div class="rg" id="ff-${field.id}" data-val="">${(field.options || []).map((o) => `<div class="ropt" onclick="setRadio(${field.id},this,${JSON.stringify(o)})">${o}</div>`).join("")}</div>`;
+  } else if (field.type === "checkbox") {
+    inp = `<div class="cg" id="ff-${field.id}">${(field.options || []).map((o) => `<div class="copt" onclick="this.classList.toggle('sel')"><div class="cbox">✓</div><span data-val="${o}">${o}</span></div>`).join("")}</div>`;
+  } else if (field.type === "scale") {
+    inp = `<div><input type="range" class="slider" id="ff-${field.id}" min="1" max="10" value="5" oninput="document.getElementById('sv-${field.id}').textContent=this.value"><div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.8rem;color:var(--gray)"><span>1</span><span id="sv-${field.id}" style="font-weight:700;color:var(--primary)">5</span><span>10</span></div></div>`;
+  }
+
+  return `<div class="uf" style="animation:slideUp .4s ease both"><label>${field.q} ${req}</label>${inp}</div>`;
+}
+
+function setRating(fid, n) {
+  const c = document.getElementById("ff-" + fid);
+  c.setAttribute("data-val", n);
+  c.querySelectorAll(".star").forEach((s) => s.classList.toggle("active", parseInt(s.dataset.n) <= n));
+}
+
+function setRadio(fid, el, val) {
+  document.getElementById("ff-" + fid).setAttribute("data-val", val);
+  document.getElementById("ff-" + fid).querySelectorAll(".ropt").forEach((o) => o.classList.remove("sel"));
+  el.classList.add("sel");
+}
+
+async function loadPublicForm(token) {
+  try {
+    currentToken = token;
+    currentForm = await apiFetch(`/public/forms/${token}`);
+    currentQuestions = currentForm.questions || [];
+
+    document.getElementById("uf-title").textContent = currentForm.title;
+    document.getElementById("uf-desc").textContent = currentForm.description || "Please fill out the form below";
+    document.getElementById("uf-custom").innerHTML = currentQuestions.map(mkUserField).join("");
+    document.getElementById("uf-name").value = "";
+    document.getElementById("uf-reg").value = "";
+    document.getElementById("uf-section").value = currentForm.section || "";
+
+    showPage("user-page");
+  } catch (err) {
+    toast(err.message || "Form not found", "error");
+    showPage("landing");
+  }
+}
+
+async function submitFeedback() {
+  if (!currentToken || !currentForm) {
+    toast("No active form found", "error");
+    return;
+  }
+
+  const btn = document.querySelector(".sub-btn");
+  const studentName = document.getElementById("uf-name").value.trim();
+  const registerNo = document.getElementById("uf-reg").value.trim();
+  const section = document.getElementById("uf-section").value.trim();
+
+  if (!studentName || !registerNo || !section) {
+    toast("Fill all required student details", "error");
+    return;
+  }
+
+  const answers = {};
+  let comment = "";
+
+  for (const field of currentQuestions) {
+    let val = "";
+
+    if (field.type === "rating" || field.type === "radio") {
+      val = document.getElementById(`ff-${field.id}`)?.dataset.val || "";
+    } else if (field.type === "checkbox") {
+      val = [...document.querySelectorAll(`#ff-${field.id} .copt.sel span`)].map((x) => x.dataset.val);
+    } else {
+      val = document.getElementById(`ff-${field.id}`)?.value ?? "";
+    }
+
+    if (field.required) {
+      const empty = Array.isArray(val) ? val.length === 0 : String(val).trim() === "";
+      if (empty) {
+        toast(`Please answer: ${field.q}`, "error");
+        return;
+      }
+    }
+
+    answers[`q${field.id}`] = val;
+
+    if (field.type === "text" || field.type === "textarea") {
+      comment += " " + String(val || "");
+    }
+  }
+
+  try {
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    await apiFetch(`/public/forms/${currentToken}/submit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studentName,
+        registerNo,
+        section,
+        answers,
+        comment: comment.trim()
+      })
+    });
+
+    toast("Feedback submitted successfully", "success");
+    showPage("thankyou");
+  } catch (err) {
+    toast(err.message || "Submission failed", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "✅ Submit Feedback";
+  }
+}
+
+function backToForms() {
+  if (currentToken) {
+    loadPublicForm(currentToken);
+  } else {
+    showPage("landing");
+  }
+}
+
+function getTokenFromUrl() {
+  const url = new URL(window.location.href);
+  const qpToken = url.searchParams.get("token");
+  if (qpToken) return qpToken;
+
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const formIndex = parts.indexOf("form");
+  if (formIndex !== -1 && parts[formIndex + 1]) {
+    return parts[formIndex + 1];
+  }
+  return null;
+}
+
+window.addEventListener("load", async () => {
+  const saved = localStorage.getItem("vtmt_user");
+  if (saved) {
+    try {
+      cu = JSON.parse(saved);
+      document.getElementById("a-name").textContent = cu.name;
+      document.getElementById("a-avatar").textContent = cu.name[0].toUpperCase();
+    } catch (_) {}
+  }
+
+  const token = getTokenFromUrl();
+  if (token) {
+    await loadPublicForm(token);
+    return;
+  }
+
+  if (cu) {
+    showPage("admin");
+    await updateStats();
+    await renderForms();
+  } else {
+    showPage("landing");
+  }
+});
+
+function clearFacultyForm() {
+  document.getElementById("fac-name").value = "";
+  document.getElementById("fac-email").value = "";
+  document.getElementById("fac-password").value = "";
+  document.getElementById("faculty-result").innerHTML = "";
+}
+
+function clearFacultyForm() {
+  document.getElementById("fac-name").value = "";
+  document.getElementById("fac-email").value = "";
+  document.getElementById("fac-password").value = "";
+}
+
+async function createFacultyFrontend() {
+  if (!cu || cu.role !== "admin") {
+    toast("Only admin can create faculty", "error");
+    return;
+  }
+
+  const name = document.getElementById("fac-name").value.trim();
+  const email = document.getElementById("fac-email").value.trim().toLowerCase();
+  const password = document.getElementById("fac-password").value.trim();
+  const resultBox = document.getElementById("faculty-result");
+
+  if (!name || !email || !password) {
+    toast("Fill all faculty details", "error");
+    return;
+  }
+
+  try {
+    const data = await apiFetch("/admin/create-faculty", {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ name, email, password })
+    });
+
+    clearFacultyForm();
+
+    resultBox.innerHTML = `
+      <div style="
+        background:#ecfdf5;
+        border:1px solid #86efac;
+        color:#166534;
+        padding:16px;
+        border-radius:14px;
+        margin-top:12px
+      ">
+        <strong>✅ Faculty Created Successfully</strong><br><br>
+        <div><strong>Name:</strong> ${data.faculty.name}</div>
+        <div><strong>Email:</strong> ${data.faculty.email}</div>
+        <div><strong>Role:</strong> ${data.faculty.role}</div>
+      </div>
+    `;
+
+    toast("Faculty created successfully", "success");
+  } catch (err) {
+    resultBox.innerHTML = `
+      <div style="
+        background:#fef2f2;
+        border:1px solid #fca5a5;
+        color:#991b1b;
+        padding:16px;
+        border-radius:14px;
+        margin-top:12px
+      ">
+        <strong>❌ Failed to create faculty</strong><br><br>
+        ${err.message}
+      </div>
+    `;
+    toast(err.message || "Faculty creation failed", "error");
+  }
+}
+
+</script>
 </body>
 </html>
